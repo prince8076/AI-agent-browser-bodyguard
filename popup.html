@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent Browser Bodyguard</title>
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <polygon points="12,1.5 21,5.8 21,13.2 12,22.5 3,13.2 3,5.8" fill="#8b5cf6"/>
+        <polygon points="13.2,6.7 9.1,13.2 11.5,13.2 10.8,17.8 14.9,11.3 12.5,11.3" fill="#00e5ff"/>
+      </svg>
+      <div>
+        <div class="title">Bodyguard</div>
+        <div class="subtitle">AI-agent privacy monitor</div>
+      </div>
+    </div>
+    <label class="switch" title="Master on/off">
+      <input type="checkbox" id="enabled-toggle" checked>
+      <span class="slider"></span>
+    </label>
+  </header>
+
+  <section class="hero">
+    <svg class="ring" viewBox="0 0 100 100" width="96" height="96" aria-hidden="true">
+      <circle cx="50" cy="50" r="44" fill="none" stroke="#2a2440" stroke-width="9"/>
+      <circle id="score-ring-fg" cx="50" cy="50" r="44" fill="none" stroke="#00e5ff"
+              stroke-width="9" stroke-linecap="round" transform="rotate(-90 50 50)"/>
+    </svg>
+    <div class="hero-text">
+      <div class="score-row"><span id="score-num">–</span><span class="score-max">/100</span></div>
+      <div id="site-host" class="host">…</div>
+      <div id="verdict" class="verdict"></div>
+    </div>
+  </section>
+
+  <section class="card" id="ai-card">
+    <div class="card-title">AI services contacted <span id="ai-count" class="count">0</span></div>
+    <ul id="ai-list" class="list"></ul>
+    <div id="ai-empty" class="empty">No AI endpoints detected on this page.</div>
+  </section>
+
+  <section class="stats">
+    <div class="stat"><div id="stat-trackers" class="stat-num">0</div><div class="stat-label">trackers blocked</div></div>
+    <div class="stat"><div id="stat-fp" class="stat-num">0</div><div class="stat-label">fingerprint attempts</div></div>
+  </section>
+
+  <section class="card" id="why-card" hidden>
+    <div class="card-title">Why this score</div>
+    <ul id="deduct-list" class="list deduct"></ul>
+  </section>
+
+  <section class="card" id="ai-panel">
+    <div class="card-title">Explain with local AI</div>
+    <div id="ai-status" class="ai-status" data-kind="">Checking…</div>
+    <div class="ai-row">
+      <span class="ai-model">Model: <span id="ai-model-label">—</span></span>
+      <button id="ai-explain-btn" class="btn" disabled>Explain this site</button>
+    </div>
+    <pre id="ai-output" class="ai-output" hidden></pre>
+    <label class="ai-toggle"><input type="checkbox" id="ai-local-toggle"> Enable local AI (Ollama, nothing leaves this device)</label>
+  </section>
+
+  <footer>100% local · no account · v0.1.0</footer>
+
+  <script src="ollama-client.js"></script>
+  <script src="explainer.js"></script>
+  <script src="popup.js"></script>
+  <script src="popup-ai.js"></script>
+</body>
+</html>
