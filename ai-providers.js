@@ -13,7 +13,8 @@
 // short findings summary (hostname + counts, never raw history) is sent.
 
 const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1';
-const NVIDIA_DEFAULT_MODEL = 'meta/llama-3.1-8b-instruct';
+// Verified working end-to-end on the free tier (2026-10-23).
+const NVIDIA_DEFAULT_MODEL = 'openai/gpt-oss-20b';
 
 /**
  * OpenAI-compatible /v1/chat/completions call (NVIDIA NIM, Groq, etc.).
