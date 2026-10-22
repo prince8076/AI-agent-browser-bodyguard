@@ -54,19 +54,37 @@
   </section>
 
   <section class="card" id="ai-panel">
-    <div class="card-title">Explain with local AI</div>
+    <div class="card-title">Explain with AI</div>
+    <label class="field-label" for="ai-provider">Provider</label>
+    <select id="ai-provider" class="ai-select">
+      <option value="ollama-local">Local — Ollama (private, on this device)</option>
+      <option value="nvidia">NVIDIA free tier (cloud, needs key)</option>
+    </select>
     <div id="ai-status" class="ai-status" data-kind="">Checking…</div>
+    <div id="nvidia-key-row" hidden>
+      <div class="ai-key-row">
+        <input type="password" id="nvidia-key" placeholder="nvapi-… key from build.nvidia.com" autocomplete="off" spellcheck="false">
+        <button id="nvidia-save" class="btn">Save</button>
+      </div>
+      <div id="nvidia-key-state" class="ai-model">No key saved</div>
+      <div class="warn">Cloud mode sends a short summary — site name, score, endpoint and
+        tracker counts — to NVIDIA's servers. Never raw browsing history. Only
+        enable this if you're OK with that. Free tier is rate-limited and terms
+        can change.</div>
+      <label class="ai-toggle"><input type="checkbox" id="nvidia-consent"> I understand summaries leave my device</label>
+    </div>
     <div class="ai-row">
       <span class="ai-model">Model: <span id="ai-model-label">—</span></span>
       <button id="ai-explain-btn" class="btn" disabled>Explain this site</button>
     </div>
     <pre id="ai-output" class="ai-output" hidden></pre>
-    <label class="ai-toggle"><input type="checkbox" id="ai-local-toggle"> Enable local AI (Ollama, nothing leaves this device)</label>
+    <label class="ai-toggle"><input type="checkbox" id="ai-enabled-toggle"> Enable AI explanations</label>
   </section>
 
-  <footer>100% local · no account · v0.1.0</footer>
+  <footer>Local by default · no account · v0.2.0</footer>
 
   <script src="ollama-client.js"></script>
+  <script src="ai-providers.js"></script>
   <script src="explainer.js"></script>
   <script src="popup.js"></script>
   <script src="popup-ai.js"></script>

@@ -10,8 +10,15 @@
    `document.createElement('canvas').toDataURL()` → fingerprint attempts
    counter should increment within ~3 seconds.
 5. Toggle the master switch off → counters freeze; on → fresh report per navigation.
-6. With Ollama running (`ollama pull llama3.1:8b`), tick "Enable local AI" →
-   "Explain this site" returns 3 plain-language bullets.
+6. With Ollama running (`ollama pull llama3.1:8b`), tick "Enable AI
+   explanations" with the "Local — Ollama" provider → "Explain this site"
+   returns 3 plain-language bullets.
+7. NVIDIA provider: pick "NVIDIA free tier", paste a key from build.nvidia.com,
+   save → status shows "Key saved ✓". "Explain this site" stays disabled until
+   the consent box is ticked. With consent, explanation works via
+   `meta/llama-3.1-8b-instruct`. A bad key shows "Key rejected (HTTP 401/403)".
+8. Reload the extension with old v0.1 settings (`{mode:'local'}`) present →
+   settings migrate to `{enabled:true, provider:'ollama-local'}`.
 
 ## Known limitations
 

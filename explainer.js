@@ -1,7 +1,8 @@
-// explainer.js
-// Turns the extension's deterministic findings into human-readable explanations
-// using the local Ollama model. The AI never sees raw browsing history — only a
-// compact, per-site summary the extension already computed locally.
+// explainer.js — turns the extension's deterministic findings into human-readable
+// explanations via whichever AI provider the user selected (see ai-providers.js).
+//
+// The provider only ever receives a compact, per-site summary the extension
+// already computed locally — never raw browsing history.
 //
 // Expected findings shape:
 // {
@@ -11,6 +12,9 @@
 //   trackersBlocked: 23,
 //   fingerprintHits: [{ api: "canvas", count: 5 }, { api: "audio", count: 2 }]
 // }
+//
+// provider: one of AI_PROVIDERS (see ai-providers.js)
+// settings: the stored bodyguard.ai settings ({model, apiKey, ...})
 
 const EXPLAINER_SYSTEM = [
   'You are the explainer inside a privacy-focused browser extension.',
@@ -52,22 +56,26 @@ function summarizeFindings(f) {
  * Explain a site's privacy findings in plain language.
  * @returns {Promise<string>} bullet-point explanation
  */
-async function explainSite(findings, model) {
+async function explainSite(findings, provider, settings) {
   const user = `Explain this privacy report for a non-technical user:\n\n${summarizeFindings(findings)}`;
-  return ollamaChat(model, [
-    { role: 'system', content: EXPLAINER_SYSTEM },
-    { role: 'user', content: user },
-  ]);
+  return provider.chat(
+    settings,
+    [
+      { role: 'system', content: EXPLAINER_SYSTEM },
+      { role: 'user', content: user },
+    ],
+    { maxTokens: 350 }
+  );
 }
 
 /**
  * Classify an unknown third-party domain seen on a page.
  * @returns {Promise<string>} one of AI, TRACKER, ANALYTICS, CDN, UNKNOWN
  */
-async function classifyEndpoint(domain, pageHostname, model) {
+async function classifyEndpoint(domain, pageHostname, provider, settings) {
   const user = `Domain: ${domain}\nSeen on page: ${pageHostname}`;
-  const raw = await ollamaChat(
-    model,
+  const raw = await provider.chat(
+    settings,
     [
       { role: 'system', content: CLASSIFIER_SYSTEM },
       { role: 'user', content: user },

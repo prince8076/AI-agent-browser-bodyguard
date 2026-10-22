@@ -92,17 +92,7 @@ async function initPopup() {
     render(await getCurrentFindings());
   });
 
-  // Local-AI opt-in toggle (popup-ai.js owns the panel itself)
-  const aiToggle = el('ai-local-toggle');
-  const stored = await chrome.storage.local.get('bodyguard.ai');
-  const settings = stored['bodyguard.ai'] || { mode: 'off' };
-  aiToggle.checked = settings.mode === 'local';
-  aiToggle.addEventListener('change', async () => {
-    await chrome.storage.local.set({
-      'bodyguard.ai': { mode: aiToggle.checked ? 'local' : 'off', model: settings.model || null },
-    });
-    location.reload();
-  });
+  // AI panel (provider select, key entry, consent) is fully owned by popup-ai.js.
 }
 
 document.addEventListener('DOMContentLoaded', initPopup);

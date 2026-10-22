@@ -4,7 +4,8 @@
 per site: which AI services it contacts, how many tracker/ad requests were
 blocked, and whether it attempts browser fingerprinting — rolled into one
 explainable 0–100 privacy score. Optional plain-language explanations run on a
-**local** Ollama model. 100% local, no account, no telemetry.
+**local** Ollama model by default, with NVIDIA's free cloud tier available as
+an explicit opt-in. Local by default, no account, no telemetry.
 
 ## What it does
 
@@ -23,8 +24,12 @@ explainable 0–100 privacy score. Optional plain-language explanations run on a
 - **Privacy hardening** — WebRTC IP-handling policy locked to
   `default_public_interface_only`, hyperlink auditing and network prediction
   disabled via `chrome.privacy`.
-- **Local-AI explanations (opt-in)** — with Ollama running, the popup can
-  explain the report in plain language. Nothing leaves the device.
+- **AI explanations (opt-in)** — the popup can explain the report in plain
+  language via a provider you choose:
+  - **Local — Ollama** (default): with Ollama running, nothing leaves the device.
+  - **NVIDIA free tier** (opt-in): paste a free key from build.nvidia.com; the
+    popup shows a consent checkbox first, and only a short summary (site name,
+    score, counts — never raw history) is sent to NVIDIA's servers.
 
 ## Install (developer mode)
 
@@ -36,11 +41,13 @@ explainable 0–100 privacy score. Optional plain-language explanations run on a
    ```
 3. Open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**,
    and select this folder.
-4. (Optional, for AI explanations) Install [Ollama](https://ollama.com), then:
-   ```
-   ollama pull llama3.1:8b
-   ```
-   Tick "Enable local AI" at the bottom of the popup.
+4. (Optional, for AI explanations)
+   - **Local (recommended):** install [Ollama](https://ollama.com), then
+     `ollama pull llama3.1:8b`. In the popup, tick "Enable AI explanations"
+     and pick the "Local — Ollama" provider.
+   - **NVIDIA free tier:** get a free key at build.nvidia.com. In the popup,
+     pick the "NVIDIA free tier" provider, paste the key, tick the consent
+     box, then enable AI explanations.
 
 ## Project layout
 
@@ -52,8 +59,9 @@ relay.js                 isolated-world relay for probe messages
 popup.html / popup.css / popup.js
                          popup UI + report rendering
 ollama-client.js         localhost Ollama client (no cloud, no keys)
-explainer.js             prompt builders: explainSite(), classifyEndpoint()
-popup-ai.js              popup wiring for the local-AI panel
+ai-providers.js          provider abstraction: ollama-local (default) + nvidia (opt-in)
+explainer.js             prompt builders: explainSite(), classifyEndpoint() — provider-agnostic
+popup-ai.js              popup wiring for the AI panel: provider select, key entry, consent gate
 assets/ai-endpoints.json curated AI/agent endpoint list
 assets/blocked-domains.json
                          blocklist domains extracted from the DNR rulesets
@@ -72,11 +80,14 @@ icons/make-icons.py      Pillow icon generator (run once after cloning)
 | `storage` | On/off toggle + AI settings, local only |
 | `<all_urls>` | The monitor has to see requests on every site |
 | `http://localhost:11434/*` | Talk to local Ollama only when you opt in |
+| `https://integrate.api.nvidia.com/*` | Talk to NVIDIA's API only when you pick that provider, save a key, and tick consent |
 
 ## Roadmap
 
-- v0.2: sensitive-paste warning (warn before pasting passwords into AI chatboxes)
-- v0.3: historical per-site timeline, exportable report
-- v0.4: community-maintained AI-endpoint feed with signed updates
+- v0.3: sensitive-paste warning (warn before pasting passwords into AI chatboxes)
+- v0.4: historical per-site timeline, exportable report
+- v0.5: community-maintained AI-endpoint feed with signed updates
 
+## License
 
+MIT — do what you want, keep the copyright notice.
