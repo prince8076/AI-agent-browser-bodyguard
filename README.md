@@ -79,6 +79,4 @@ icons/make-icons.py      Pillow icon generator (run once after cloning)
 - v0.3: historical per-site timeline, exportable report
 - v0.4: community-maintained AI-endpoint feed with signed updates
 
-## License
 
-MIT — do what you want, keep the copyright notice.
